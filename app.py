@@ -2,16 +2,18 @@ import streamlit as st
 import psycopg2
 import requests
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from a .env file
+load_dotenv()
 
 # Function to connect to the database
-
-# PostgreSQL connection (replace with your credentials)
 def get_db_connection():
     return psycopg2.connect(
-        host="dpg-ctc1nsggph6c73aa1qpg-a.oregon-postgres.render.com",
-        database="sencia",
-        user="sencia_user",
-        password="PAkNnlSC9WNSc4rafBNcyifVulbgLjqv"
+        host=os.getenv("DB_HOST"),
+        database=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD")
     )
 
 # Fetch agents from the database
