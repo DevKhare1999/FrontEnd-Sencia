@@ -160,16 +160,69 @@ def product_page():
             )
             if response.status_code == 200:
                 st.write("Analysis successful!")
+                output = response.json()
+                embed_code = '''// Embeddable JavaScript Boilerplate for Displaying JSON Data
+(function () {
+// Create a container for the product display
+const containerId = "product-display-container";
+
+// Create or find the container element on the page
+let container = document.getElementById(containerId);
+if (!container) {
+    container = document.createElement("div");
+    container.id = containerId;
+    document.body.appendChild(container);
+}
+
+// Sample JSON Data for a single product (Replace this with dynamic data fetching as needed)
+const product = {''' + f'''
+    name: "{output['name']}",
+    price: "{output['price']}",
+    description: "{output['description']}"
+''' +'''};
+
+// Function to render product data into HTML
+function renderProduct(product) {
+    // Clear existing content
+    container.innerHTML = "";
+
+    // Create a header for the container
+    const header = document.createElement("h2");
+    header.textContent = "Product Details";
+    container.appendChild(header);
+
+    // Generate HTML for the product
+    const productCard = document.createElement("div");
+    productCard.style.border = "1px solid #ccc";
+    productCard.style.padding = "10px";
+    productCard.style.margin = "10px 0";
+    productCard.style.borderRadius = "5px";
+
+    const productName = document.createElement("h3");
+    productName.textContent = product.name;
+    productCard.appendChild(productName);
+
+    const productPrice = document.createElement("p");
+    productPrice.textContent = `Price: ${product.price}`;
+    productCard.appendChild(productPrice);
+
+    const productDescription = document.createElement("p");
+    productDescription.textContent = `Description: ${product.description}`;
+    productCard.appendChild(productDescription);
+
+    container.appendChild(productCard);
+}
+
+// Render the sample product (replace this with fetched data if needed)
+renderProduct(product);
+})();'''
+                st.session_state.embed_code = embed_code
             else:
                 st.write("Failed to analyze the URL.")
-            
-            embed_code = f"{str(response.json())}"
-            st.text_area("Embed Code", value=embed_code, height=200, key="generated_embed_code")
-            st.session_state.embed_code = embed_code
 
     if 'embed_code' in st.session_state:
         st.write("Last generated embed code:")
-        st.text_area("Embed Code", value=st.session_state.embed_code, height=200, key="last_generated_embed_code")
+        st.code(st.session_state.embed_code, language="javascript")
 
 # Login Page
 def login_page():
